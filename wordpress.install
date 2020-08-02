@@ -1,0 +1,217 @@
+#!/bin/bash
+apt install vim -y
+if [ -e latest-zh_CN.tar.gz ];then
+echo 娘个比你已经下载了文件！！！！
+
+else
+wget https://cn.wordpress.org/latest-zh_CN.tar.gz
+fi
+	
+if [ -d wordpress ];then
+	echo "娘比你也解压好了！！" | tee access
+
+	echo "the wordperss is unzip" >> access
+else
+tar -xvzf ./latest-zh_CN.tar.gz
+fi
+if [ -e /usr/sbin/nginx ];then
+	echo "nginx>>>>>>>>>>>>>>>OK;" | tee access
+else
+ echo 	nginx 没有安装正在尝试安装！！！
+	sudo apt-get update 
+	apt install epel-release
+	sudo apt-get install nginx -y
+fi
+if [ -e /usr/sbin/nginx ];then
+	echo "nginx >>>>>>> Finished!!!!!" | tee access
+else 
+	echo nginx 安装失败！！！！;
+fi
+echo 安装 mysql php进行中
+sudo apt-get install mariadb-server php php-fpm php-mysql  -y
+
+echo "开始自动配置nginx,端口233"
+read -p "请输入你选哪个要的端口号" port
+echo $port
+
+sed -i "8c listen $port;" wordpress.conf
+
+
+
+echo "现在正在把nginx默认配置文件放在你当前的目录！！！"
+if [ -d old ];then
+	echo "nginx备份文件夹已经存在" >> access
+else
+
+mkdir ./old 
+fi
+
+
+if [ -e /etc/nginx/conf.d/default.conf ];then
+       rm -rf /etc/nginx/conf.d/default.conf 
+fi       
+
+
+
+
+#if [ -e /etc/nginx/sites-available/default ];then
+#mv /etc/nginx/sites-available/default  ./old
+
+#fi
+
+#if [ -e /etc/nginx/sites-enabled/default  ];then
+#	mv /etc/nginx/sites-enabled/default  ./old
+
+#fi
+
+
+
+if [ -e wordpress.conf ];then
+	echo "检测到你已经有wordpress.conf"
+else
+	wget http://www.wetzhy.icu/wordpress.conf
+fi
+ echo "正在修改nginx配置文件" | tee access
+sed -i '62c #' /etc/nginx/nginx.conf
+
+
+#PHPLISTEN
+php_listen=$(ss -lnpt | grep 9000 | awk '{printf "\t" $4}'|cut -d ':' -f 2)
+if [ "${php_listen}" == "9000" ];then
+	        echo "php is start" >> access
+fi
+#PHP7.4
+if [ -e /etc/php/7.4/fpm/pool.d/www.conf ];then
+	echo "的确有php7.4配置文件" | tee access
+	listen_php_config=$(cat  /etc/php/7.4/fpm/pool.d/www.conf | sed -n '37p')
+	echo "正在尝试修改php.4p文件" | tee access
+	sed '36c  ;listen = /run/php/php7.4-fpm.sock' -i /etc/php/7.4/fpm/pool.d/www.conf
+   else
+	    echo "没有php配置文件" | tee access
+ fi
+
+
+ if [ "${listen_php_config}" == "" ] && [ -e /etc/php/7.4/fpm/pool.d/www.conf ];then
+   echo "检测到php7.4文件存在且没有编辑！！！" >> access
+
+ 
+               sed -i '36a listen = 9000' /etc/php/7.4/fpm/pool.d/www.conf
+systemctl start php7.4-fpm
+systemctl restart php7.4-fpm
+
+  else
+          echo "没有php配置文件或者没有编辑" 
+
+ fi 
+#php7.3
+		
+if [ -e /etc/php/7.3/fpm/pool.d/www.conf ];then
+	echo "的确有php7.3配置文件" | tee access
+	listen_php_config=$(cat  /etc/php/7.3/fpm/pool.d/www.conf | sed -n '37p')
+	echo "正在尝试修改php7.3文件" | tee access
+	sed '36c  ;listen = /run/php/php7.3-fpm.sock' -i /etc/php/7.3/fpm/pool.d/www.conf
+   else
+	    echo "没有php配置文件" | tee access
+ fi
+
+
+ if [ "${listen_php_config}" == "" ] && [ -e /etc/php/7.3/fpm/pool.d/www.conf ];then
+   echo "检测到php7.3文件存在且没有编辑！！！" >> access
+
+ 
+               sed -i '36a listen = 9000' /etc/php/7.3/fpm/pool.d/www.conf
+systemctl start php7.3-fpm
+systemctl restart php7.3-fpm
+
+  else
+          echo "没有php配置文件或者没有编辑" 
+  fi
+
+
+#PHP7.2
+if [ -e /etc/php/7.2/fpm/pool.d/www.conf ];then
+	echo "的确有php7.2配置文件" | tee access
+	listen_php_config=$(cat  /etc/php/7.2/fpm/pool.d/www.conf | sed -n '37p')
+	echo "正在尝试修改php文件" | tee access
+	sed '36c  ;listen = /run/php/php7.2-fpm.sock' -i /etc/php/7.2/fpm/pool.d/www.conf
+   else
+	    echo "没有php配置文件" | tee access
+ fi
+
+
+ if [ "${listen_php_config}" == "" ] && [ -e /etc/php/7.2/fpm/pool.d/www.conf ];then
+   echo "检测到php7.2文件存在且没有编辑！！！" >> access
+
+ 
+               sed -i '36a listen = 9000' /etc/php/7.2/fpm/pool.d/www.conf
+	       echo "正在编辑php" >> access
+systemctl start php7.2-fpm
+systemctl restart php7.2-fpm
+  else
+          echo "没有php配置文件或者没有编辑" 
+  fi
+
+
+
+
+
+#PHPLISTEN
+php_listen=$(ss -lnpt | grep 9000 | awk '{printf "\t" $4}'|cut -d ':' -f 2)
+if [ "${php_listen}" == "9000" ];then
+	        echo "php is start" | tee access
+fi
+
+
+
+
+echo "现在正在把nginx配置文件拷贝到你的配置目录！！！！"
+cp ./wordpress.conf /etc/nginx/sites-available/
+cp ./wordpress.conf /etc/nginx/sites-enabled/
+
+cp ./wordpress.conf /etc/nginx/conf.d/
+
+
+if [ -e /var/www/html/index.php ];then
+	echo "index已经存在，尝试删除重试" | tee access
+	rm -rf /var/www/html/*
+
+	cp -r ./wordpress/* /var/www/html
+
+else
+cp -r ./wordpress/* /var/www/html
+chown -R www-data:www-data /var/www/html
+chmod 775 /var/www/html
+fi
+
+
+systemctl restart nginx
+systemctl stop apache2 
+systemctl start mariadb
+
+
+ nginx_listen=$(ss -lnpt | grep nginx | cut -d ' ' -f 1)
+
+ if [ "${nginx_listen}" == "LISTEN" ];then
+	 echo "nginx启动成功" | tee access
+fi
+
+
+#wordpress配置
+
+if [ -e /var/www/html/wp-config-sample.php ];then
+	mv /var/www/html/wp-config-sample.php /var/www/html/wp-config.php
+fi
+
+  mysqladmin -uroot password "password1234"
+echo $?
+ mysql -uroot -ppassword1234 -e 'create database wordpress_website;grant all privileges on wordpress_website.* to "wordpress"@"localhost" identified by "password";flush privileges;'
+echo $?
+
+
+
+sed -i "23c define( 'DB_NAME', 'wordpress_website' );" /var/www/html/wp-config.php
+  
+sed -i "26c     define( 'DB_USER', 'wordpress' );" /var/www/html/wp-config.php
+
+sed -i "29c define( 'DB_PASSWORD', 'password' );" /var/www/html/wp-config.php
+
