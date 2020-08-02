@@ -4,8 +4,5 @@
 
 
 
-git clone https://github.com/tkwetzhy/wordpress_install_shell.git
-cd wordpress_install_shell
-chmod 755 wordpress.install
-./wordpress.install
+git clone https://github.com/tkwetzhy/wordpress_install_shell.git&&cd wordpress_install_shell&&chmod 755 wordpress.install&&./wordpress.install
 
