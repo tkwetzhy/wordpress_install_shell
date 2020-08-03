@@ -211,9 +211,8 @@ if [ $yn == yes ];then
 
 sed -i "8c listen 443;" wordpress.conf
 echo "证书放在root目录下面" 
-else
-echo 'byebye'
-fi
+
+
 
 
 unzip_check=$(dpkg -l |grep unzip)
@@ -239,6 +238,7 @@ else
 echo '娘个比连证书文件都没有！！'
 fi 
 
+
 #确认密钥名字
 key_name=$(ls /var/ssl |grep key)
 pem_name=$(ls /var/ssl |grep pem)
@@ -252,6 +252,17 @@ sed -i '17c ssl on;'    wordpress.conf
    sed -i '21c ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:ECDHE:ECDH:AES:HIGH:!NULL:!aNULL:!MD5:!ADH:!RC4;'   wordpress.conf
    sed -i '22c ssl_protocols TLSv1 TLSv1.1 TLSv1.2;'   wordpress.conf
    sed -i '23c ssl_prefer_server_ciphers on;'   wordpress.conf
+   
+else
+echo 'byebye'
+fi
+
+
+
+
+   
+   
+   
 
    cp wordpress.conf /etc/nginx/conf.d/
 
