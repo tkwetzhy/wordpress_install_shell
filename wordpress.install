@@ -84,10 +84,10 @@ fi
 if [ -e /etc/php/7.4/fpm/pool.d/www.conf ];then
 	echo "的确有php7.4配置文件" | tee access
 	listen_php_config=$(cat  /etc/php/7.4/fpm/pool.d/www.conf | sed -n '37p')
-	echo "正在尝试修改php.4p文件" | tee access
+	echo "正在尝试修改php7.4p文件" | tee access
 	sed '36c  ;listen = /run/php/php7.4-fpm.sock' -i /etc/php/7.4/fpm/pool.d/www.conf
    else
-	    echo "没有php配置文件" | tee access
+	    echo "没有php7.4配置文件" | tee access
  fi
 
 
@@ -100,7 +100,7 @@ systemctl start php7.4-fpm
 systemctl restart php7.4-fpm
 
   else
-          echo "没有php配置文件或者没有编辑" 
+          echo "没有php7.4配置文件或者没有编辑" 
 
  fi 
 #php7.3
@@ -111,7 +111,7 @@ if [ -e /etc/php/7.3/fpm/pool.d/www.conf ];then
 	echo "正在尝试修改php7.3文件" | tee access
 	sed '36c  ;listen = /run/php/php7.3-fpm.sock' -i /etc/php/7.3/fpm/pool.d/www.conf
    else
-	    echo "没有php配置文件" | tee access
+	    echo "没有php7.3配置文件" | tee access
  fi
 
 
@@ -124,7 +124,7 @@ systemctl start php7.3-fpm
 systemctl restart php7.3-fpm
 
   else
-          echo "没有php配置文件或者没有编辑" 
+          echo "没有php7.3配置文件或者没有编辑" 
   fi
 
 
@@ -132,10 +132,10 @@ systemctl restart php7.3-fpm
 if [ -e /etc/php/7.2/fpm/pool.d/www.conf ];then
 	echo "的确有php7.2配置文件" | tee access
 	listen_php_config=$(cat  /etc/php/7.2/fpm/pool.d/www.conf | sed -n '37p')
-	echo "正在尝试修改php文件" | tee access
+	echo "正在尝试修改php7.2文件" | tee access
 	sed '36c  ;listen = /run/php/php7.2-fpm.sock' -i /etc/php/7.2/fpm/pool.d/www.conf
    else
-	    echo "没有php配置文件" | tee access
+	    echo "没有php7.2配置文件" | tee access
  fi
 
 
@@ -148,7 +148,7 @@ if [ -e /etc/php/7.2/fpm/pool.d/www.conf ];then
 systemctl start php7.2-fpm
 systemctl restart php7.2-fpm
   else
-          echo "没有php配置文件或者没有编辑" 
+          echo "没有php7.2配置文件或者没有编辑" 
   fi
 
 
