@@ -210,12 +210,7 @@ read -p "我就问你到底要不要https: " yn
 if [ $yn == yes ];then
 
 sed -i "8c listen 443;" wordpress.conf
-read -p "证书在root文件嘛？？如果不在输入no继续上传！！" key_yn
-elif [ $key_yn == no ];then
-exit 0
-
-
-
+echo "证书放在root目录下面" 
 else
 echo 'byebye'
 fi
@@ -226,15 +221,6 @@ if [ "${unzip_check}" != "" ];then
 echo 'unzip已经安装!!!'
 else
 apt install unzip -y
-fi
-
-if [ -e /root/*.zip ];then
-echo '这个是你的证书文件压缩包嘛,娘个比为什么不解压!!!'
-
-ls /root  |grep *zip
-unzip /root/*.zip
-else
-echo '上传文件了嘛？？？？ root目录'
 fi
 
 if [ -d /var/ssl ];then
@@ -249,14 +235,15 @@ echo '已经检测到你的目录存在证书文件'
 echo '现在要去把证书文件移动到/var/ssl'
 mv /root/*.key /var/ssl
 mv /root/*.pem /var/ssl
-mv /root/*.crt /var/ssl
 else
 echo '娘个比连证书文件都没有！！'
 fi 
+
+#确认密钥名字
 key_name=$(ls /var/ssl |grep key)
 pem_name=$(ls /var/ssl |grep pem)
 
-
+#修改nginx
 
 sed -i '17c ssl on;'    wordpress.conf
    sed -i "18c ssl_certificate  /var/ssl/${pem_name};"   wordpress.conf
