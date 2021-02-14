@@ -163,7 +163,8 @@ if [ -e /var/www/html/index.php ];then
 	rm -rf /var/www/html/*
 
 	cp -r ./wordpress/* /var/www/html
-
+	chown -R www-data:www-data /var/www/html
+	chmod 775 /var/www/html
 else
 cp -r ./wordpress/* /var/www/html
 chown -R www-data:www-data /var/www/html
