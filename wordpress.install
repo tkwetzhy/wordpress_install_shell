@@ -206,6 +206,9 @@ sed -i "23c define( 'DB_NAME', 'wordpress_website' );" /var/www/html/wp-config.p
 sed -i "26c     define( 'DB_USER', 'wordpress' );" /var/www/html/wp-config.php
 
 sed -i "29c define( 'DB_PASSWORD', 'password' );" /var/www/html/wp-config.php
+echo "用户名：wordpress"
+echo "密码:password"
+echo "库名：wordpress_website"
 
 read -p "我就问你到底要不要https: " yn
 if [ $yn == yes ];then
